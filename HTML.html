@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue Background</title>
+    <style>
+        body {
+            background-color: lightblue;
+            /* You can customize the shade of blue by using different color codes */
+        }
+    </style>
+</head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tres en Raya</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 300px;
+            margin: 40px auto;
+        }
+
+        table, th, td {
+            border: 10px solid gray;
+        }
+
+        th, td {
+            width: 100px;
+            height: 100px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        button {
+            font-size: 18px;
+            margin: 20px;
+        }
+
+        #mathModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 10000px solid black;
+            z-index: 2;
+        }
+
+        #mathModal input {
+            font-size: 18px;
+            margin: 10px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tres en Raya</h1>
+
+<table id="ticTacToe">
+    <tr>
+        <td onclick="makeMove(0, 0)"></td>
+        <td onclick="makeMove(0, 1)"></td>
+        <td onclick="makeMove(0, 2)"></td>
+    </tr>
+    <tr>
+        <td onclick="makeMove(1, 0)"></td>
+        <td onclick="makeMove(1, 1)"></td>
+        <td onclick="makeMove(1, 2)"></td>
+    </tr>
+    <tr>
+        <td onclick="makeMove(2, 0)"></td>
+        <td onclick="makeMove(2, 1)"></td>
+        <td onclick="makeMove(2, 2)"></td>
+    </tr>
+</table>
+
+<button onclick="resetGame()"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reset&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+
+<!-- Math problem modal -->
+<div id="mathModal">
+    <p id="mathQuestion"></p>
+    <input type="text" id="mathAnswer" placeholder="Tu respuesta">
+    <button onclick="submitAnswer()">enter</button>
+</div>
+
+<script>
+    let currentPlayer = 'X';
+    let board = [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
+    ];
+
+    // Array of word problems in Spanish
+    const wordProblems = [
+        { question: 'What is 27 in spanish', answer: 'Vientisiete' },
+        { question: 'What is 27 in spanish', answer: 'Vientisiete' },
+        { question: 'What is 112', answer: 'Ciento Doce' },
+        { question: 'What is 84 in Spanish', answer: 'Ochenta y Cuatro' },
+        { question: 'What is 55 in Spanish', answer: 'cincuenta y cinco' },
+        { question: 'What is 13 in Spanish', answer: 'trece' },
+        { question: 'What is bed in Spanish', answer: 'cama' },
+        { question: 'What is sofa in Spanish (Disregard accent)', answer: 'sofa' },
+        { question: 'What is closet in Spanish', answer: 'armario' },
+        { question: 'What is baño in English', answer: 'Bathroom' },
+        { question: 'What is cuarenta y ocho in Spanish (Number form)', answer: '48' },
+        { question: 'What is trienta y siete in Spanish (Number Form)', answer: '37' },
+        { question: 'What is living room in Spanish', answer: 'la sala' },
+        { question: 'What is yard in spanish', answer: 'el patio' },
+        { question: 'What is basement in Spanish (Disregard accent)', answer: 'el sotano' },
+        { question: 'What is alfombra in English', answer: 'Rug' },
+        { question: 'What is espejo in English', answer: 'mirror' },
+        { question: 'What is window in Spanish', answer: 'la ventana' },
+        { question: 'What is La Puerta in English', answer: 'door' },
+        { question: 'What is bonito/a in English', answer: 'pretty' },
+        { question: 'What is Sucio in English', answer: 'dirty' },
+        { question: 'what is grande in English', answer: 'large' },
+        { question: 'What does "colores" mean', answer: 'colors' },
+        { question: 'What is el dinero in English', answer: 'money' },
+        { question: 'What does recibir mean', answer: 'recieve' },
+        { question: 'If a noun ends in o, what is usually the gender of that noun', answer: 'male' },
+        { question: 'If a noun ends in a, what is usually the gender of that noun', answer: 'female' },
+        { question: 'What is más in English', answer: 'more' },
+        { question: 'What is Less in Spanish', answer: 'menos' },
+        { question: 'What is mejor in English', answer: 'better' },
+        { question: 'What is peor in English', answer: 'worse' },
+        { question: 'What is Mayor in English', answer: 'older' },
+        { question: 'What is younger in Spanish', answer: 'menor' },
+        { question: 'What is tan...como in English', answer: 'as...as' },
+        { question: 'What is tanto/a como in English', answer: 'as much as' },
+        { question: 'What is as many as in Spanish', answer: 'Tantos como' },
+        { question: 'What conjugation goes with yo?', answer: 'o' },
+        { question: 'What conjugation is as/es', answer: 'Tu' },
+        { question: 'What conjugation goes with ella in an ar ending', answer: 'a' },
+        { question: 'What conjugation is Nosotros with an ar ending', answer: 'amos' },
+        { question: 'What conjugation is  aís in a female form', answer: 'vosotras' },
+        { question: 'What conjugation is an in male form', answer: 'ellos' },
+        { question: 'What is shirt in Spanish', answer: 'Camisa' },
+        { question: 'What does pantalones mean in English', answer: 'Pants' },
+        { question: 'What does pantalones cortos mean in English', answer: 'Shorts' },
+        { question: 'What is hat in Spanish ', answer: 'Gorra' },
+        { question: 'What is shoes in Spanish', answer: 'Zapatos' },
+        { question: 'What is a Tienda de Ropa', answer: 'A Clothing store' },
+        { question: 'What is a Joyería', answer: 'A Jewelry store' },
+        { question: 'What is a Tienda', answer: 'A store' },
+        { question: 'What is a Centro de comercial', answer: 'The Mall' },
+        
+        
+        // ... (your existing problems)
+    ];
+
+    let currentProblemIndex;
+
+    function makeMove(row, col) {
+    if (board[row][col] === '') {
+        // Randomly select a word problem
+        currentProblemIndex = Math.floor(Math.random() * wordProblems.length);
+        const randomProblem = wordProblems[currentProblemIndex];
+
+        // Display the word problem modal
+        document.getElementById('mathQuestion').textContent = `Finish the Problem ${currentPlayer}: ${randomProblem.question}`;
+        document.getElementById('mathAnswer').value = '';
+        document.getElementById('mathModal').style.display = 'block';
+
+        // Save the selected position
+        document.getElementById('mathModal').setAttribute('data-row', row);
+        document.getElementById('mathModal').setAttribute('data-col', col);
+    } else {
+        alert('That Space is already taken, choose another.');
+    }
+}
+
+       function submitAnswer() {
+        const answer = document.getElementById('mathAnswer').value.trim().toLowerCase();
+        if (answer !== '' && answer === wordProblems[currentProblemIndex].answer.toLowerCase()) {
+            // Hide the word problem modal
+            document.getElementById('mathModal').style.display = 'none';
+
+            // Proceed with making the move
+            const [row, col] = [parseInt(document.getElementById('mathModal').getAttribute('data-row')), parseInt(document.getElementById('mathModal').getAttribute('data-col'))];
+            board[row][col] = currentPlayer;
+            document.getElementById('ticTacToe').rows[row].cells[col].innerHTML = currentPlayer;
+
+            // Check for a winner
+            if (checkWinner()) {
+                showWinScreen(currentPlayer);
+            } else {
+                togglePlayer();
+            }
+        } else {
+            // Incorrect answer, show alert, update question, and then show new problem
+            alert('Wrong Answer, Try again');
+            updateQuestion();
+        }
+    }
+
+    // New function to update the question
+    function updateQuestion() {
+        // Randomly select a new word problem
+        currentProblemIndex = Math.floor(Math.random() * wordProblems.length);
+        const randomProblem = wordProblems[currentProblemIndex];
+
+        // Display the updated word problem modal
+        document.getElementById('mathQuestion').textContent = `Resuelve el problema para colocar ${currentPlayer}: ${randomProblem.question}`;
+        document.getElementById('mathAnswer').value = '';
+        document.getElementById('mathModal').style.display = 'block';
+    }
+
+    function getEmptyCell() {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (board[i][j] === '') {
+                    return [i, j];
+                }
+            }
+        }
+    }
+
+    function togglePlayer() {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    }
+
+    function checkWinner() {
+        // Check rows, columns, and diagonals for a winner
+        for (let i = 0; i < 3; i++) {
+            if (
+                (board[i][0] === currentPlayer && board[i][1] === currentPlayer && board[i][2] === currentPlayer) ||
+                (board[0][i] === currentPlayer && board[1][i] === currentPlayer && board[2][i] === currentPlayer) ||
+                (board[0][0] === currentPlayer && board[1][1] === currentPlayer && board[2][2] === currentPlayer) ||
+                (board[0][2] === currentPlayer && board[1][1] === currentPlayer && board[2][0] === currentPlayer)
+            ) {
+                alert(`Good Job ${currentPlayer} You win!`);
+                resetGame();
+            }
+        }
+    }
+
+    function resetGame() {
+        board = [
+            ['', '', ''],
+            ['', '', ''],
+            ['', '', '']
+        ];
+
+        currentPlayer = 'X';
+
+        // Clear the HTML table
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                document.getElementById('ticTacToe').rows[i].cells[j].innerHTML = '';
+            }
+        }
+        
+        function showWinScreen(player) {
+        // Display win screen with light blue background
+        document.body.style.backgroundColor = '#add8e6';
+        
+        // Show win message
+        alert(`Good Job ${player} You win!`);
+
+        // Reset the game
+        resetGame();
+        
+        // Reset the background color
+        document.body.style.backgroundColor = '';
+    }
+
+    // Modified function to handle incorrect answers
+    function submitAnswer() {
+        const answer = document.getElementById('mathAnswer').value.trim().toLowerCase();
+        if (answer !== '' && answer === wordProblems[currentProblemIndex].answer.toLowerCase()) {
+            // Hide the word problem modal
+            document.getElementById('mathModal').style.display = 'none';
+
+            // Proceed with making the move
+            const [row, col] = getEmptyCell();
+            board[row][col] = currentPlayer;
+            document.getElementById('ticTacToe').rows[row].cells[col].innerHTML = currentPlayer;
+
+            // Check for a winner
+            if (checkWinner()) {
+                showWinScreen(currentPlayer);
+            } else {
+                togglePlayer();
+            }
+        } else {
+            // Incorrect answer, show alert and then update question
+            alert('Incorrect');
+            updateQuestion();
+        }
+    }
+
+    // Modified function to check for a winner
+    function checkWinner() {
+        // Check rows, columns, and diagonals for a winner
+        for (let i = 0; i < 3; i++) {
+            if (
+                (board[i][0] === currentPlayer && board[i][1] === currentPlayer && board[i][2] === currentPlayer) ||
+                (board[0][i] === currentPlayer && board[1][i] === currentPlayer && board[2][i] === currentPlayer) ||
+                (board[0][0] === currentPlayer && board[1][1] === currentPlayer && board[2][2] === currentPlayer) ||
+                (board[0][2] === currentPlayer && board[1][1] === currentPlayer && board[2][0] === currentPlayer)
+            ) {
+                return true;
+            }
+        }
+        return false;
+        
+    }
+    }
+    
+</script>
+
+</body>
+</html>
